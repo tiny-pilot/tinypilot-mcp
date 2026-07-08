@@ -13,31 +13,25 @@ Host-agnostic MCP server for the [TinyPilot REST API](https://tinypilotkvm.com/p
 ## Quick start
 
 ```bash
-git clone https://github.com/tiny-pilot/tinypilot-mcp.git
-cd tinypilot-mcp
-python3 -m venv venv
-source venv/bin/activate
-pip install -e .
-export TINYPILOT_DEVICES=/absolute/path/to/devices.json
-tinypilot-mcp
+pip install tinypilot-mcp
 ```
 
-Copy and edit the example configs:
+Create a fleet config (edit `base_url` and device ids for your TinyPilots):
 
 ```bash
-cp examples/devices.json ~/tinypilot-devices.json
-cp examples/mcp.json ~/.cursor/mcp.json   # or .cursor/mcp.json in your project
-# Edit base_url, device ids, and absolute paths for your fleet
-export TINYPILOT_DEVICES=~/tinypilot-devices.json
+curl -sSL https://raw.githubusercontent.com/tiny-pilot/tinypilot-mcp/master/examples/devices.json \
+  -o ~/tinypilot-devices.json
 ```
 
-See [examples/mcp.json](examples/mcp.json) for Cursor wiring (`mcpServers`). Claude Desktop, Claude Code, and VS Code use the same `command` and `TINYPILOT_DEVICES` env — field names differ slightly; see [MCP host setup](#mcp-host-setup) below.
+Wire it into your MCP host — see [MCP host setup](#mcp-host-setup) below. Set `TINYPILOT_DEVICES` to the **absolute path** to your `devices.json`.
 
-`TINYPILOT_DEVICES` must point to an absolute path to your `devices.json`. The server reads fleet config at startup and logs to **stderr** only (stdio MCP transport).
+`TINYPILOT_DEVICES` must point to an absolute path. The server reads fleet config at startup and logs to **stderr** only (stdio MCP transport).
+
+**No global install?** Use `uvx tinypilot-mcp` as the MCP `command` with `"args": ["tinypilot-mcp"]` — see [MCP host setup](#mcp-host-setup).
 
 ## MCP host setup
 
-Use the same `tinypilot-mcp` binary in every host. Set `TINYPILOT_DEVICES` to your config path.
+Use `tinypilot-mcp` (after `pip install`) or `uvx` with `args: ["tinypilot-mcp"]`. Set `TINYPILOT_DEVICES` to your config path.
 
 ### Cursor
 
@@ -178,10 +172,18 @@ This MCP server provides execution primitives; the skill teaches agents how to u
 
 ## Development
 
+From a git checkout:
+
 ```bash
+git clone https://github.com/tiny-pilot/tinypilot-mcp.git
+cd tinypilot-mcp
+python3 -m venv venv
+source venv/bin/activate
 pip install -e ".[dev]"
 pytest -v
 ```
+
+Published on [PyPI](https://pypi.org/project/tinypilot-mcp/) as `tinypilot-mcp`.
 
 AI agents changing this repo: read [AGENTS.md](AGENTS.md).
 
