@@ -1,0 +1,10 @@
+venv/
+.venv/
+.cursor/
+__pycache__/
+*.pyc
+.pytest_cache/
+data/
+devices.local.json
+*.egg-info/
+dist/

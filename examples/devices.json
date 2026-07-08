@@ -1,0 +1,17 @@
+{
+  "defaults": {
+    "verify_ssl": true,
+    "timeout_seconds": 30,
+    "paste_wait_buffer_ms": 1000,
+    "capabilities": ["read", "input"]
+  },
+  "devices": [
+    {
+      "id": "demo-01",
+      "base_url": "http://127.0.0.1:48000",
+      "label": "Demo TinyPilot",
+      "aliases": ["demo", "tinypilot.local"]
+    }
+  ],
+  "output_dir": "./data"
+}

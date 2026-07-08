@@ -1,0 +1,29 @@
+[project]
+name = "tinypilot-mcp"
+version = "0.1.0"
+description = "MCP server for TinyPilot REST API — fleet-aware KVM automation primitives"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "mcp>=1.9.0",
+    "httpx>=0.28.0",
+    "pydantic>=2.10.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-httpx>=0.35.0"]
+
+[project.scripts]
+tinypilot-mcp = "tinypilot_mcp.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tinypilot_mcp"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "tinypilot": {
+      "command": "/absolute/path/to/venv/bin/tinypilot-mcp",
+      "env": {
+        "TINYPILOT_DEVICES": "/absolute/path/to/devices.json"
+      }
+    }
+  }
+}
