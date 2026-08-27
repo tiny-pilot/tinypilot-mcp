@@ -4,6 +4,8 @@
 
 **Client-side MCP.** `tinypilot-mcp` runs on the user's machine next to the MCP host. It does not run on the TinyPilot appliance.
 
+Requires TinyPilot Pro **3.2.0+**. Auth is a persistent API key from **System → Automation** (`Authorization: Bearer <API_KEY>`).
+
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  MCP host (Cursor, Claude Desktop, Claude Code, …)      │
@@ -17,41 +19,38 @@
 │  │ (tools)     │──│ state    │──│ devices.json     │  │
 │  └──────┬──────┘  └──────────┘  └──────────────────┘  │
 │         │                                               │
-│  ┌──────▼──────┐  ┌──────────────┐  ┌───────────────┐   │
-│  │ client.py   │  │ token_cache  │  │ action_log    │   │
-│  └──────┬──────┘  └──────────────┘  └───────────────┘   │
+│  ┌──────▼──────┐                ┌───────────────┐     │
+│  │ client.py   │                │ action_log    │     │
+│  └──────┬──────┘                └───────────────┘     │
 └─────────┼───────────────────────────────────────────────┘
-          │ HTTPS per device
+          │ HTTPS + Bearer API key per device
 ┌─────────▼───────────────────────────────────────────────┐
 │  TinyPilot device A    TinyPilot device B    …          │
-│  POST /api/v1/auth     (independent REST endpoints)     │
 │  GET  /api/v1/screenshot                                │
-│  GET  /state (unofficial)                                 │
+│  GET  /state                                            │
 │  POST /api/v1/keystroke | mouseEvent | paste            │
 └─────────────────────────────────────────────────────────┘
 ```
 
-There is **no central TinyPilot fleet API**. Multiple devices = multiple URLs in local config.
+There is **no central TinyPilot fleet API**. Multiple devices = multiple URLs + API keys in local config.
 
 ## Module responsibilities
 
 | Module | Responsibility |
 |--------|----------------|
-| `config.py` | Load/validate `devices.json`; capability flags |
-| `token_cache.py` | In-memory bearer tokens per `device_id` |
-| `client.py` | httpx calls to one device's REST API; 403 retry |
+| `config.py` | Load/validate `devices.json`; required `api_key` per device; capability flags |
+| `client.py` | httpx calls to one device's REST API with Bearer API key |
 | `stream_state.py` | Parse `GET /state` (online, resolution) |
 | `coords.py` | Pixel ↔ relative coordinate conversion |
 | `session.py` | Active device, resolve `device_id`, paste wait |
 | `errors.py` | Agent-facing error message strings |
-| `action_log.py` | Append-only JSONL audit hook |
+| `action_log.py` | Append-only JSONL audit hook (no paste content, no API keys) |
 | `server.py` | FastMCP registration, instructions, tool handlers |
 | `tools/annotations.py` | `readOnlyHint`, `destructiveHint`, etc. |
 
 ## Session state (in-process)
 
 - `active_device_id` — set by `tinypilot_select_device`
-- `token_cache[device_id]` — until TinyPilot restart or 403
 - Config loaded once at startup from `TINYPILOT_DEVICES`
 
 ## Tool layers
@@ -74,13 +73,14 @@ Tools not in configured capabilities are **not registered**.
 - Composite workflow tools
 - CMDB, ITSM, runbooks, admin API
 - Host-specific code
+- Pre-3.2.0 ephemeral `POST /api/v1/auth`
 
 **Linked separately:** tinypilot-ai-agent-skills (workflow; not bundled)
 
 ## Dependencies
 
-- `mcp` — protocol server (FastMCP)
-- `httpx` — sync HTTP to TinyPilot (simple; paste wait uses `time.sleep`)
+- `mcp` — protocol server (FastMCP; `mcp<2`)
+- `httpx` — sync HTTP to TinyPilot (paste wait uses `time.sleep`)
 - `pydantic` — config + tool input models
 
 No ORM, no web framework, no CLI beyond `tinypilot-mcp` entry point.

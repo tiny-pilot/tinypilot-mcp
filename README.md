@@ -7,8 +7,8 @@ Host-agnostic MCP server for the [TinyPilot REST API](https://tinypilotkvm.com/p
 ## Requirements
 
 - Python 3.11+
-- TinyPilot device with an [Automation License](https://tinypilotkvm.com/pages/automation)
-- Today: TinyPilot WebUI **password auth disabled** — password-protected WebUI blocks REST API access. A future TinyPilot update will allow user auth alongside API access.
+- TinyPilot Pro **3.2.0 or later** with an [Automation License](https://tinypilotkvm.com/pages/automation)
+- A persistent API key from **System → Automation** on each device (keys work with WebUI user auth enabled)
 
 ## Quick start
 
@@ -16,18 +16,30 @@ Host-agnostic MCP server for the [TinyPilot REST API](https://tinypilotkvm.com/p
 pip install tinypilot-mcp
 ```
 
-Create a fleet config (edit `base_url` and device ids for your TinyPilots):
+Create a fleet config (edit `base_url`, `api_key`, and device ids):
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/tiny-pilot/tinypilot-mcp/master/examples/devices.json \
   -o ~/tinypilot-devices.json
+chmod 600 ~/tinypilot-devices.json
 ```
 
-Wire it into your MCP host — see [MCP host setup](#mcp-host-setup) below. Set `TINYPILOT_DEVICES` to the **absolute path** to your `devices.json`.
+Create an API key on each device under **System → Automation**, set `api_key` in
+the config, and keep that file out of git.
 
-`TINYPILOT_DEVICES` must point to an absolute path. The server reads fleet config at startup and logs to **stderr** only (stdio MCP transport).
+Wire it into your MCP host — see [MCP host setup](#mcp-host-setup). Set
+`TINYPILOT_DEVICES` to the **absolute path** of your `devices.json`. The server
+logs to **stderr** only (stdio MCP transport).
 
-**No global install?** Use `uvx tinypilot-mcp` as the MCP `command` with `"args": ["tinypilot-mcp"]` — see [MCP host setup](#mcp-host-setup).
+**No global install?** Use `uvx tinypilot-mcp` as the MCP `command` with
+`"args": ["tinypilot-mcp"]`.
+
+### Migrating from 0.1.x
+
+1. Upgrade the device to TinyPilot Pro **3.2.0+** and create an API key.
+2. `pip install -U tinypilot-mcp` (0.2.0+).
+3. Add `"api_key": "..."` to every device in `devices.json`.
+4. Restart the MCP server / host.
 
 ## MCP host setup
 
