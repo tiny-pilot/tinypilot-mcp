@@ -25,3 +25,11 @@ def hid_disconnected(detail: str) -> str:
         f"Could not forward input to target: {detail}. "
         "Verify USB cable and target power."
     )
+
+
+def invalid_api_key(device_id: str) -> str:
+    return (
+        f"API key rejected for device '{device_id}' (HTTP 403). "
+        "Check api_key in devices.json, or create/revoke keys under "
+        "System → Automation (TinyPilot Pro 3.2.0+)."
+    )

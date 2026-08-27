@@ -9,6 +9,7 @@
     {
       "id": "demo-01",
       "base_url": "http://127.0.0.1:48000",
+      "api_key": "YOUR_API_KEY",
       "label": "Demo TinyPilot",
       "aliases": ["demo", "tinypilot.local"]
     }

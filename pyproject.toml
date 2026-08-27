@@ -1,12 +1,12 @@
 [project]
 name = "tinypilot-mcp"
-version = "0.1.0"
+version = "0.2.0"
 description = "MCP server for TinyPilot REST API — fleet-aware KVM automation primitives"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 dependencies = [
-    "mcp>=1.9.0",
+    "mcp>=1.9.0,<2",
     "httpx>=0.28.0",
     "pydantic>=2.10.0",
 ]

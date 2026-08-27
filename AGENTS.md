@@ -25,9 +25,10 @@ Instructions for AI agents working on **tinypilot-mcp**. Read [Architecture](doc
 - Sync httpx; paste wait blocks intentionally
 - Tools: `tinypilot_*` prefix; annotations on every tool; actionable error strings
 - Log to **stderr** only — stdout is MCP protocol
-- Action log: no paste content, no tokens
+- Action log: no paste content, no API keys
 - Tests: `pytest` + `pytest-httpx`; mock HTTP, not hardware
 - Minimum diff; no new dependencies without good reason
+- Target: TinyPilot Pro 3.2.0+ (API keys; no `/api/v1/auth`)
 
 ## When changing code
 

@@ -11,6 +11,7 @@ def sample_devices_json(tmp_path):
     {
       "id": "lab-01",
       "base_url": "http://127.0.0.1:48000",
+      "api_key": "test-api-key",
       "label": "Lab box",
       "aliases": ["lab", "LAB-01"]
     }

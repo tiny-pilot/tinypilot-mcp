@@ -13,6 +13,7 @@ Capability = Literal["read", "input"]
 class DeviceConfig(BaseModel):
     id: str
     base_url: str
+    api_key: str
     label: str = ""
     aliases: list[str] = Field(default_factory=list)
     verify_ssl: bool | None = None
